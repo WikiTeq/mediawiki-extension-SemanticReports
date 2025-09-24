@@ -37,7 +37,7 @@ class GenerateReport extends \Maintenance {
 	 */
 	public function execute() {
 		// REL1_39 compat
-		if ( method_exists( $this, 'getServiceContainer' ) === false ) {
+		if ( !method_exists( $this, 'getServiceContainer' ) ) {
 			/** @var SemanticReports $semanticReports */
 			$semanticReports = MediaWikiServices::getInstance()->get( 'SemanticReports' );
 		} else {
