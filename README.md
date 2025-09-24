@@ -3,6 +3,11 @@
 This extension provides a command-line tool for generating reports based on semantic queries. It supports CSV output
 format and allows users to specify the output file for the generated report.
 
+## Installation
+
+1. Clone the repository
+2. Install the extension `wfLoadExtension( 'SemanticReports' );`
+
 ## Usage
 
 ```bash
