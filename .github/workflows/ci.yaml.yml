@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: ${{ github.workspace }}/SemanticMediaWiki
-          ref: REL1_43
+          ref: 5.0.2
           repository: SemanticMediaWiki/SemanticMediaWiki
       - name: Setup Extension
         uses: actions/checkout@v4
