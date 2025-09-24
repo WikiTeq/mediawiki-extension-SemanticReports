@@ -12,6 +12,10 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 // @codingStandardsIgnoreStart
+
+/**
+ * @method \MediaWiki\MediaWikiServices getServiceContainer() available in 1.40+
+ */
 class GenerateReport extends \Maintenance {
 // @codingStandardsIgnoreEnd
 
@@ -42,7 +46,6 @@ class GenerateReport extends \Maintenance {
 			$semanticReports = MediaWikiServices::getInstance()->get( 'SemanticReports' );
 		} else {
 			/** @var SemanticReports $semanticReports */
-			/** @phan-suppress-next-line PhanUndeclaredClassMethod */
 			$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
 		}
 		$query = $this->getOption( 'query' );
