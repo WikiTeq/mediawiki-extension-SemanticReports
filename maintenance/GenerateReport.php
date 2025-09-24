@@ -1,0 +1,82 @@
+<?php
+
+namespace MediaWiki\Extension\SemanticReports\Maintenance;
+
+use MediaWiki\Extension\SemanticReports\SemanticReports;
+use MediaWiki\Maintenance\Maintenance;
+
+$maintPath = getenv( 'MW_INSTALL_PATH' ) !== false ?
+	getenv( 'MW_INSTALL_PATH' ) . '/maintenance' :
+	__DIR__ . '/../../../maintenance';
+
+require_once $maintPath . '/Maintenance.php';
+
+// @codingStandardsIgnoreStart
+class GenerateReport extends Maintenance {
+// @codingStandardsIgnoreEnd
+
+	/**
+	 * SemanticReportsReport constructor.
+	 *
+	 * @param null $args
+	 */
+	public function __construct( $args = null ) {
+		parent::__construct();
+		$this->addDescription( 'Generates a report based on the semantic query' );
+		$this->addOption( 'query', 'Query to run: "{{#ask: ...}}"', true, true, 'q' );
+		$this->addOption( 'format', 'Output format: csv', true, true, 'f' );
+		$this->addOption( 'output', 'Output file', false, true, 'o' );
+		$this->requireExtension( 'SemanticReports' );
+		if ( $args ) {
+			$this->loadWithArgv( $args );
+		}
+	}
+
+	/**
+	 * @return null
+	 */
+	public function execute() {
+		/** @var SemanticReports $semanticReports */
+		$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
+		$query = $this->getOption( 'query' );
+		$format = $this->getOption( 'format' );
+
+		if ( $format !== 'csv' ) {
+			$this->fatalError( 'Only CSV output is supported' );
+		}
+
+		// enforce that the query does not contain curly braces
+		if ( str_contains( $query, '{' ) ) {
+			$this->fatalError(
+				'Query cannot contain curly braces, i.e. use "[[Category:Test]] [[Property:Test]]", ' .
+				'not "{{#ask: [[Category:Test]] ... }}"'
+			);
+		}
+
+		// enforce that the query does not contain pipe arguments aside from print requests
+		if ( preg_match( '/\|[^?]+/', $query ) ) {
+			$this->fatalError(
+				'Query cannot contain pipe arguments aside from print requests, i.e. "|?Prop" is allowed,' .
+				' but "|format=test" is not'
+			);
+		}
+
+		$result = $semanticReports->getReportData( $query, $format );
+		if ( $result === false ) {
+			$this->fatalError( 'Error generating report' );
+		}
+
+		if( $filename = $this->getOption( 'output') ) {
+			// output to the file
+			file_put_contents( $filename, $result );
+			$this->outputChanneled( "Report saved to $filename" );
+		} else {
+			// output to the stdout
+			$this->output( $result );
+		}
+	}
+
+}
+
+$maintClass = GenerateReport::class;
+require_once RUN_MAINTENANCE_IF_MAIN;

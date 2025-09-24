@@ -1,0 +1,31 @@
+{
+	"name": "SemanticReports",
+	"version": "1.0.0",
+	"author": [
+		"[https://www.mediawiki.org/wiki/User:WikiTeq WikiTeq]",
+		"[https://www.mediawiki.org/wiki/User:Vedmaka Alexey Klimovich]"
+	],
+	"url": "https://github.com/WikiTeq/SemanticReports",
+	"descriptionmsg": "semanticreports-desc",
+	"license-name": "MIT",
+	"requires": {
+		"MediaWiki": ">= 1.39.0",
+		"extensions": {
+			"SemanticMediaWiki": ">= 3.0.0"
+		}
+	},
+	"type": "other",
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\SemanticReports\\": "includes/",
+		"MediaWiki\\Extension\\SemanticReports\\Maintenance\\": "maintenance/"
+	},
+	"MessagesDirs": {
+		"SemanticReports": [
+			"i18n"
+		]
+	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"manifest_version": 2
+}
