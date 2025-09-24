@@ -13,13 +13,13 @@ env:
 jobs:
   style:
     name: Code Style
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     steps:
       - uses: wikiteq/php-lint-action@main
 
   security:
     name: Static Analysis
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -59,7 +59,7 @@ jobs:
 
   i18n-check:
     name: I18n check
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     steps:
       - name: I18n check action
         uses: wikiteq/mediawiki-i18n-check-action@main
