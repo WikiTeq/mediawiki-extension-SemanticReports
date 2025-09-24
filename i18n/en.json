@@ -1,0 +1,6 @@
+{
+	"@metadata": {
+		"authors": [ "WikiTeq team", "Alexey Klimovich" ]
+	},
+	"semanticreports-desc": "Generates reports based on semantic queries"
+}
