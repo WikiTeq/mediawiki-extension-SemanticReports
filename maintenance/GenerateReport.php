@@ -5,11 +5,11 @@ namespace MediaWiki\Extension\SemanticReports\Maintenance;
 use MediaWiki\Extension\SemanticReports\SemanticReports;
 use MediaWiki\Maintenance\Maintenance;
 
-$maintPath = getenv( 'MW_INSTALL_PATH' ) !== false ?
-	getenv( 'MW_INSTALL_PATH' ) . '/maintenance' :
-	__DIR__ . '/../../../maintenance';
-
-require_once $maintPath . '/Maintenance.php';
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+require_once "$IP/maintenance/Maintenance.php";
 
 // @codingStandardsIgnoreStart
 class GenerateReport extends Maintenance {
