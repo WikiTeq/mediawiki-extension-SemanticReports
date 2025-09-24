@@ -3,7 +3,6 @@
 namespace MediaWiki\Extension\SemanticReports\Maintenance;
 
 use MediaWiki\Extension\SemanticReports\SemanticReports;
-use MediaWiki\Maintenance\Maintenance;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -12,7 +11,7 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 // @codingStandardsIgnoreStart
-class GenerateReport extends Maintenance {
+class GenerateReport extends \Maintenance {
 // @codingStandardsIgnoreEnd
 
 	/**
