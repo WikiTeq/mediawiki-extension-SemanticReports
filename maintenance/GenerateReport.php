@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\SemanticReports\Maintenance;
 
 use MediaWiki\Extension\SemanticReports\SemanticReports;
+use MediaWiki\MediaWikiServices;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -35,8 +36,14 @@ class GenerateReport extends \Maintenance {
 	 * @return null
 	 */
 	public function execute() {
-		/** @var SemanticReports $semanticReports */
-		$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
+		// REL1_39 compat
+		if ( method_exists( $this, 'getServiceContainer' ) === false ) {
+			/** @var SemanticReports $semanticReports */
+			$semanticReports = MediaWikiServices::getInstance()->get( 'SemanticReports' );
+		} else {
+			/** @var SemanticReports $semanticReports */
+			$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
+		}
 		$query = $this->getOption( 'query' );
 		$format = $this->getOption( 'format' );
 
