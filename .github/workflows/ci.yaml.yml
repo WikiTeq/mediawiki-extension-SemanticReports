@@ -40,7 +40,7 @@ jobs:
       - name: Setup dependency - SemanticMediaWiki
         uses: actions/checkout@v4
         with:
-          path: ${{ github.workspace }}/SemanticMediaWiki
+          path: extensions/SemanticMediaWiki
           ref: 5.0.2
           repository: SemanticMediaWiki/SemanticMediaWiki
       - name: Setup Extension
