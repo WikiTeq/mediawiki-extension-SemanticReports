@@ -42,6 +42,7 @@ class GenerateReport extends \Maintenance {
 			$semanticReports = MediaWikiServices::getInstance()->get( 'SemanticReports' );
 		} else {
 			/** @var SemanticReports $semanticReports */
+			/** @phan-suppress-next-line PhanUndeclaredClassMethod */
 			$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
 		}
 		$query = $this->getOption( 'query' );
