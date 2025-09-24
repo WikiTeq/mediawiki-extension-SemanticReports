@@ -91,7 +91,12 @@ class SemanticReports {
 	 *
 	 * @return SMWQuery
 	 */
-	private function getQuery( string $queryString, array $printouts, array $parameters = [], string $format = '' ): SMWQuery {
+	private function getQuery(
+		string $queryString,
+		array $printouts,
+		array $parameters = [],
+		string $format = ''
+	): SMWQuery {
 		SMWQueryProcessor::addThisPrintout( $printouts, $parameters );
 
 		$query = SMWQueryProcessor::createQuery(

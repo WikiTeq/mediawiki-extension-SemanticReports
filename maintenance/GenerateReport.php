@@ -66,7 +66,8 @@ class GenerateReport extends Maintenance {
 			$this->fatalError( 'Error generating report' );
 		}
 
-		if( $filename = $this->getOption( 'output') ) {
+		// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.Found
+		if ( $filename = $this->getOption( 'output' ) ) {
 			// output to the file
 			file_put_contents( $filename, $result );
 			$this->outputChanneled( "Report saved to $filename" );
