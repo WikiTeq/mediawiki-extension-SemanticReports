@@ -67,6 +67,7 @@ class SemanticReports {
 		) );
 
 		// return false if there are errors
+		/** @phan-suppress-next-line PhanUndeclaredClassMethod */
 		if ( $queryResult->getErrors() !== [] ) {
 			return false;
 		}
@@ -118,9 +119,10 @@ class SemanticReports {
 	 *
 	 * @param SMWQuery $query
 	 *
-	 * @return QueryResult
+	 * @phan-suppress PhanUndeclaredTypeReturnType
+	 * @return QueryResult|\SMWQueryResult
 	 */
-	private function getQueryResult( SMWQuery $query ): QueryResult {
+	private function getQueryResult( SMWQuery $query ) {
 		return $this->querySourceFactory
 			->get( $query->getQuerySource() )
 			->getQueryResult( $query );
