@@ -23,8 +23,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mediawiki: [ REL1_39, REL1_43 ]
-        smw: [ 4.2.0, 5.0.2 ]
+        include:
+          - mediawiki: REL1_39
+            smw: 4.2.0
+          - mediawiki: REL1_43
+            smw: 5.0.2
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401
