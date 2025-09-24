@@ -3,16 +3,20 @@
 namespace MediaWiki\Extension\SemanticReports\Maintenance;
 
 use MediaWiki\Extension\SemanticReports\SemanticReports;
-use MediaWiki\Maintenance\Maintenance;
+use MediaWiki\MediaWikiServices;
 
-$maintPath = getenv( 'MW_INSTALL_PATH' ) !== false ?
-	getenv( 'MW_INSTALL_PATH' ) . '/maintenance' :
-	__DIR__ . '/../../../maintenance';
-
-require_once $maintPath . '/Maintenance.php';
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+require_once "$IP/maintenance/Maintenance.php";
 
 // @codingStandardsIgnoreStart
-class GenerateReport extends Maintenance {
+
+/**
+ * @method \MediaWiki\MediaWikiServices getServiceContainer() available in 1.40+
+ */
+class GenerateReport extends \Maintenance {
 // @codingStandardsIgnoreEnd
 
 	/**
@@ -36,8 +40,14 @@ class GenerateReport extends Maintenance {
 	 * @return null
 	 */
 	public function execute() {
-		/** @var SemanticReports $semanticReports */
-		$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
+		// REL1_39 compat
+		if ( !method_exists( $this, 'getServiceContainer' ) ) {
+			/** @var SemanticReports $semanticReports */
+			$semanticReports = MediaWikiServices::getInstance()->get( 'SemanticReports' );
+		} else {
+			/** @var SemanticReports $semanticReports */
+			$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
+		}
 		$query = $this->getOption( 'query' );
 		$format = $this->getOption( 'format' );
 
@@ -66,7 +76,8 @@ class GenerateReport extends Maintenance {
 			$this->fatalError( 'Error generating report' );
 		}
 
-		if( $filename = $this->getOption( 'output') ) {
+		// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.Found
+		if ( $filename = $this->getOption( 'output' ) ) {
 			// output to the file
 			file_put_contents( $filename, $result );
 			$this->outputChanneled( "Report saved to $filename" );

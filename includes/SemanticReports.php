@@ -67,6 +67,7 @@ class SemanticReports {
 		) );
 
 		// return false if there are errors
+		/** @phan-suppress-next-line PhanUndeclaredClassMethod */
 		if ( $queryResult->getErrors() !== [] ) {
 			return false;
 		}
@@ -91,7 +92,12 @@ class SemanticReports {
 	 *
 	 * @return SMWQuery
 	 */
-	private function getQuery( string $queryString, array $printouts, array $parameters = [], string $format = '' ): SMWQuery {
+	private function getQuery(
+		string $queryString,
+		array $printouts,
+		array $parameters = [],
+		string $format = ''
+	): SMWQuery {
 		SMWQueryProcessor::addThisPrintout( $printouts, $parameters );
 
 		$query = SMWQueryProcessor::createQuery(
@@ -113,9 +119,13 @@ class SemanticReports {
 	 *
 	 * @param SMWQuery $query
 	 *
-	 * @return QueryResult
+	 * @return QueryResult|\SMWQueryResult
+	 *
+	 * // @codingStandardsIgnoreStart
+	 * @phan-suppress PhanUndeclaredTypeReturnType
+	 * // @codingStandardsIgnoreEnd
 	 */
-	private function getQueryResult( SMWQuery $query ): QueryResult {
+	private function getQueryResult( SMWQuery $query ) {
 		return $this->querySourceFactory
 			->get( $query->getQuerySource() )
 			->getQueryResult( $query );

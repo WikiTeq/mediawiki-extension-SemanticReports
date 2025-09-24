@@ -1,7 +1,7 @@
 <?php
 
 // use phan config shipped with mediawiki core
-$cfg = require __DIR__ . '/../vendor/mediawiki/mediawiki-phan-config/src/config.php';
+$cfg = require_once __DIR__ . '/../../../vendor/mediawiki/mediawiki-phan-config/src/config.php';
 
 // Add the dependencies
 $cfg['directory_list'] = array_merge(
