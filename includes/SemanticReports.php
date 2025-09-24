@@ -121,7 +121,9 @@ class SemanticReports {
 	 *
 	 * @return QueryResult|\SMWQueryResult
 	 *
+	 * // @codingStandardsIgnoreStart
 	 * @phan-suppress PhanUndeclaredTypeReturnType
+	 * // @codingStandardsIgnoreEnd
 	 */
 	private function getQueryResult( SMWQuery $query ) {
 		return $this->querySourceFactory
