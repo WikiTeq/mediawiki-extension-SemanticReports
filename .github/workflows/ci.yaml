@@ -80,9 +80,21 @@ jobs:
       matrix:
         php: [ '8.1', '8.3' ]
         mediawiki: [ REL1_39, REL1_43 ]
+        include:
+          - mediawiki: REL1_39
+            smw: 4.2.0
+          - mediawiki: REL1_43
+            smw: 5.0.2
     steps:
       - name: Setup Extension
         uses: actions/checkout@v4
+
+      - name: Setup dependency - SemanticMediaWiki
+        uses: actions/checkout@v4
+        with:
+          repository: SemanticMediaWiki/SemanticMediaWiki
+          path: ${{ github.workspace }}/SemanticMediaWiki
+          ref: ${{ matrix.smw }}
 
       - name: Mediawiki PHPUnit
         uses: wikiteq/mediawiki-phpunit-action@master
