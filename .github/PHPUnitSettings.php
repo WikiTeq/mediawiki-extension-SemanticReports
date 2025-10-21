@@ -22,4 +22,10 @@ $wgExtensionFunctions[] = static function () {
 	// Problematic test that leaves an uncaught exception about critical sections
 	// phpcs:disable Generic.PHP.NoSilencedErrors.Discouraged
 	@unlink( $smwTests . '/MediaWiki/HooksTest.php' );
+
+	// Lots of SMW tests (1593) have no covers annotations
+	$configFile = __DIR__ . '/../../../../mediawiki/tests/phpunit/suite.xml';
+	$content = file_get_contents( $configFile );
+	$content = str_replace( 'forceCoversAnnotation="true"', 'forceCoversAnnotation="false"', $content );
+	file_put_contents( $configFile, $content );
 };
