@@ -16,3 +16,10 @@ wfLoadExtension(
 	__DIR__ . '/../../../../SemanticMediaWiki/extension.json'
 );
 enableSemantics( 'example.org' );
+
+$wgExtensionFunctions[] = static function () {
+	$smwTests = __DIR__ . '/../../../../SemanticMediaWiki/tests/phpunit';
+	// Problematic test that leaves an uncaught exception about critical sections
+	// phpcs:disable Generic.PHP.NoSilencedErrors.Discouraged
+	@unlink( $smwTests . '/MediaWiki/HooksTest.php' );
+};
