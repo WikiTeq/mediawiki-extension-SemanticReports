@@ -110,6 +110,7 @@ jobs:
           php: ${{ matrix.php }}
           mwbranch: ${{ matrix.mediawiki }}
           extension: ${{ env.EXTNAME }}
+          extra_file: .github/PHPUnitSettings.php
 
       - name: Debug on failure
         if: failure()
