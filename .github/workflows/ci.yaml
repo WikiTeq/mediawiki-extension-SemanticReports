@@ -96,6 +96,13 @@ jobs:
           path: ${{ github.workspace }}/SemanticMediaWiki
           ref: ${{ matrix.smw }}
 
+      # SMW 5.0.2 is pinned to using codesniffer 46.0.0, core REL1_43 uses
+      # codesniffer 45.0.0, and our phpunit action loads all dev dependencies
+      # of extensions; just delete all of SMW's
+      - name: SMW - remove composer.json dev dependencies
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: jq 'delpaths([["require-dev"]])' composer.json > composer.json.tmp && mv composer.json.tmp composer.json
+
       - name: Mediawiki PHPUnit
         uses: wikiteq/mediawiki-phpunit-action@master
         with:
