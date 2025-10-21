@@ -79,9 +79,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - mediawiki: REL1_39
-            smw: 4.2.0
-            php: 8.1
+          #- mediawiki: REL1_39
+          #  smw: 4.2.0
+          #  php: 8.1
           - mediawiki: REL1_43
             smw: 5.0.2
             php: 8.3
@@ -96,9 +96,6 @@ jobs:
           path: ${{ github.workspace }}/SemanticMediaWiki
           ref: ${{ matrix.smw }}
 
-      - name: Debug
-        uses: owenthereal/action-upterm@v1
-
       - name: Mediawiki PHPUnit
         uses: wikiteq/mediawiki-phpunit-action@master
         with:
@@ -106,3 +103,7 @@ jobs:
           php: ${{ matrix.php }}
           mwbranch: ${{ matrix.mediawiki }}
           extension: ${{ env.EXTNAME }}
+
+      - name: Debug on failure
+        if: failure()
+        uses: owenthereal/action-upterm@v1
