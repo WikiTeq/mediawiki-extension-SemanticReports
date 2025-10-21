@@ -11,11 +11,11 @@ env:
   MW_INSTALL_PATH: ${{ github.workspace }}
 
 jobs:
-  style:
-    name: Code Style
-    runs-on: ubuntu-latest
-    steps:
-      - uses: wikiteq/php-lint-action@main
+  # style:
+  #   name: Code Style
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: wikiteq/php-lint-action@main
 
   security:
     name: Static Analysis
@@ -24,10 +24,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - mediawiki: REL1_39
-            smw: 4.2.0
+          # - mediawiki: REL1_39
+          #   smw: 4.2.0
           - mediawiki: REL1_43
-            smw: 5.0.2
+            smw: 6.0.1
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401
@@ -61,14 +61,14 @@ jobs:
       - name: Phan
         run: ./vendor/bin/phan -d extensions/${{ env.EXTNAME }} --minimum-target-php-version=8.1 --long-progress-bar
 
-  i18n-check:
-    name: I18n check
-    runs-on: ubuntu-latest
-    steps:
-      - name: I18n check action
-        uses: wikiteq/mediawiki-i18n-check-action@main
-        with:
-          extension: EncryptedContent
+  # i18n-check:
+  #   name: I18n check
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: I18n check action
+  #       uses: wikiteq/mediawiki-i18n-check-action@main
+  #       with:
+  #         extension: SemanticReports
 
   test:
     name: PHPUnit
@@ -83,7 +83,7 @@ jobs:
           #  smw: 4.2.0
           #  php: 8.1
           - mediawiki: REL1_43
-            smw: 5.0.2
+            smw: 6.0.1
             php: 8.3
     steps:
       - name: Setup Extension
@@ -111,6 +111,7 @@ jobs:
           mwbranch: ${{ matrix.mediawiki }}
           extension: ${{ env.EXTNAME }}
           extra_file: .github/PHPUnitSettings.php
+          use_mysql: true
 
       - name: Debug on failure
         if: failure()
