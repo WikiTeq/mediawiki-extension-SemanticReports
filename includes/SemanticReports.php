@@ -42,10 +42,10 @@ class SemanticReports {
 		?int $limit = 1000000000
 	) {
 		// set defaults for null values
-		$mainlabel = $mainlabel ?? 'Title';
-		$sep = $sep ?? ',';
-		$valuesep = $valuesep ?? ';';
-		$limit = $limit ?? 1000000000;
+		$mainlabel ??= 'Title';
+		$sep ??= ',';
+		$valuesep ??= ';';
+		$limit ??= 1000000000;
 		// append query defaults
 		$suffix =
 			'|format=' . $format .
