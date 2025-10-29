@@ -24,19 +24,36 @@ class SemanticReports {
 	 * Retrieves report data based on the provided query, processes it,
 	 * and returns the result as a CSV formatted string.
 	 *
-	 * @param string $query The query string to fetch and process data.
+	 * @param string $query The query string to fetch and process data
+	 * @param string $format
+	 * @param string|null $mainlabel
+	 * @param string|null $sep
+	 * @param string|null $valuesep
+	 * @param int|null $limit
 	 *
-	 * @return string|false The CSV formatted result as a string, or false if there are errors.
+	 * @return string|false The CSV formatted the result as a string, or false if there are errors.
 	 */
-	public function getReportData( string $query, string $format ) {
+	public function getReportData(
+		string $query,
+		string $format,
+		?string $mainlabel = 'Title',
+		?string $sep = ',',
+		?string $valuesep = ';',
+		?int $limit = 1000000000
+	) {
+		// set defaults for null values
+		$mainlabel ??= 'Title';
+		$sep ??= ',';
+		$valuesep ??= ';';
+		$limit ??= 1000000000;
 		// append query defaults
 		$suffix =
 			'|format=' . $format .
-			'|limit=1000000000' .
-			'|mainlabel=Title' .
+			"|limit=$limit" .
+			"|mainlabel=$mainlabel" .
 			'|link=none' .
-			'|valuesep=;' .
-			'|sep=,' .
+			"|valuesep=$valuesep" .
+			"|sep=$sep" .
 			'|showsep=no' .
 			'|bom=no' .
 			'|merge=no';
