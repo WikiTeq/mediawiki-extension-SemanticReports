@@ -30,6 +30,12 @@ class GenerateReport extends \Maintenance {
 		$this->addOption( 'query', 'Query to run: "{{#ask: ...}}"', true, true, 'q' );
 		$this->addOption( 'format', 'Output format: csv', true, true, 'f' );
 		$this->addOption( 'output', 'Output file', false, true, 'o' );
+
+		$this->addOption( 'mainlabel', 'Override title label', false, true, 'm' );
+		$this->addOption( 'sep', 'Override columns separator', false, true, 's' );
+		$this->addOption( 'valuesep', 'Override values separator', false, true, 'v' );
+		$this->addOption( 'limit', 'Override the results limit', false, true, 'l' );
+
 		$this->requireExtension( 'SemanticReports' );
 		if ( $args ) {
 			$this->loadWithArgv( $args );
@@ -71,7 +77,15 @@ class GenerateReport extends \Maintenance {
 			);
 		}
 
-		$result = $semanticReports->getReportData( $query, $format );
+		$result = $semanticReports->getReportData(
+			$query,
+			$format,
+			$this->getOption( 'mainlabel' ),
+			$this->getOption( 'sep' ),
+			$this->getOption( 'valuesep' ),
+			$this->getOption( 'limit' )
+		);
+
 		if ( $result === false ) {
 			$this->fatalError( 'Error generating report' );
 		}
