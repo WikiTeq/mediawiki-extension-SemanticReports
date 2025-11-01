@@ -115,6 +115,12 @@ jobs:
           jq '.AutoloadClasses."SMW\\Elastic\\ElasticStore" = "src/Elastic/ElasticStore.php" | .AutoloadClasses."SMW\\MediaWiki\\Search\\ExtendedSearchEngine" = "src/MediaWiki/Search/ExtendedSearchEngine.php"' \
             extension.json > extension.json.tmp && mv extension.json.tmp extension.json
 
+      - name: SMW - fix maintenance autoload namespace entries
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: |
+          jq '.AutoloadNamespaces."SMW\\Maintenance\\" = "maintenance/" | delpaths([["AutoloadNamespaces", "SMW\\Maintenance"]])' \
+            extension.json > extension.json.tmp && mv extension.json.tmp extension.json
+
       - name: Mediawiki PHPUnit
         uses: wikiteq/mediawiki-phpunit-action@master
         with:
