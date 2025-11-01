@@ -64,7 +64,11 @@ $wgExtensionFunctions[] = static function () {
 	// More SMW tests (113) complain about the at() matcher being deprecated
 	$content = str_replace( 'failOnWarning="true"', 'failOnWarning="false"', $content );
 	// A few SMW tests (4) do not perform any assertions
-	$content = str_replace( 'beStrictAboutTestsThatDoNotTestAnything="true"', 'beStrictAboutTestsThatDoNotTestAnything="false"', $content );
+	$content = str_replace(
+		'beStrictAboutTestsThatDoNotTestAnything="true"',
+		'beStrictAboutTestsThatDoNotTestAnything="false"',
+		$content
+	);
 
 	file_put_contents( $configFile, $content );
 
