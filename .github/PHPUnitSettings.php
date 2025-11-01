@@ -68,11 +68,14 @@ $wgExtensionFunctions[] = static function () {
 
 	file_put_contents( $configFile, $content );
 
+	$coreStructure = __DIR__ . '/../../../../mediawiki/tests/phpunit/structure/';
+	// phpcs:disable Generic.PHP.NoSilencedErrors.Discouraged
 	// Could not get core structure test to pass, make sure that if any API
 	// modules are added to this extension the messages are there!
-	$apiTestFile = __DIR__ . '/../../../../mediawiki/tests/phpunit/structure/ApiStructureTest.php';
-	// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-	@unlink( $apiTestFile );
+	@unlink( $coreStructure . 'ApiStructureTest.php' );
+	// Same with AvailableRightsTest for the smw-* rights
+	@unlink( $coreStructure . 'AvailableRightsTest.php' );
+	// phpcs:enable Generic.PHP.NoSilencedErrors.Discouraged
 };
 
 // ext.smw.autocomplete missing dependency
