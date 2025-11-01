@@ -112,8 +112,7 @@ jobs:
       - name: SMW - add missing autoload entries
         working-directory: ${{ github.workspace }}/SemanticMediaWiki
         run: |
-          jq '.AutoloadClasses."SMW\\Elastic\\ElasticStore" = "src/Elastic/ElasticStore.php" | \
-            .AutoloadClasses."SMW\\MediaWiki\\Search\\ExtendedSearchEngine" = "src/MediaWiki/Search/ExtendedSearchEngine.php"' \
+          jq '.AutoloadClasses."SMW\\Elastic\\ElasticStore" = "src/Elastic/ElasticStore.php" | .AutoloadClasses."SMW\\MediaWiki\\Search\\ExtendedSearchEngine" = "src/MediaWiki/Search/ExtendedSearchEngine.php"' \
             extension.json > extension.json.tmp && mv extension.json.tmp extension.json
 
       - name: Mediawiki PHPUnit
