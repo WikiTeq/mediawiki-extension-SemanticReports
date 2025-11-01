@@ -103,6 +103,19 @@ jobs:
         working-directory: ${{ github.workspace }}/SemanticMediaWiki
         run: jq 'delpaths([["require-dev"]])' composer.json > composer.json.tmp && mv composer.json.tmp composer.json
 
+      # Make sure that ExtensionJsonValidationTest passes
+      - name: SMW - remove invalid position for qunit tests
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: jq 'delpaths([["QUnitTestModule", "ext.smw.tests", "position"]])' extension.json > extension.json.tmp && mv extension.json.tmp extension.json
+
+      # Make sure that AutoLoaderStructureTest passes
+      - name: SMW - add missing autoload entries
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: |
+          jq .AutoloadClasses."SMW\\Elastic\\ElasticStore" = "src/Elastic/ElasticStore.php" | \
+            .AutoloadClasses."SMW\\MediaWiki\\Search\\ExtendedSearchEngine" = "src/MediaWiki/Search/ExtendedSearchEngine.php" \
+            extension.json > extension.json.tmp && mv extension.json.tmp extension.json
+
       - name: Mediawiki PHPUnit
         uses: wikiteq/mediawiki-phpunit-action@master
         with:
