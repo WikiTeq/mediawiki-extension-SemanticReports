@@ -11,11 +11,11 @@ env:
   MW_INSTALL_PATH: ${{ github.workspace }}
 
 jobs:
-  # style:
-  #   name: Code Style
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: wikiteq/php-lint-action@main
+  style:
+    name: Code Style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wikiteq/php-lint-action@main
 
   security:
     name: Static Analysis
@@ -24,8 +24,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - mediawiki: REL1_39
-          #   smw: 4.2.0
+          - mediawiki: REL1_39
+            smw: 4.2.0
           - mediawiki: REL1_43
             smw: 6.0.1
     steps:
@@ -61,14 +61,14 @@ jobs:
       - name: Phan
         run: ./vendor/bin/phan -d extensions/${{ env.EXTNAME }} --minimum-target-php-version=8.1 --long-progress-bar
 
-  # i18n-check:
-  #   name: I18n check
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: I18n check action
-  #       uses: wikiteq/mediawiki-i18n-check-action@main
-  #       with:
-  #         extension: SemanticReports
+  i18n-check:
+    name: I18n check
+    runs-on: ubuntu-latest
+    steps:
+      - name: I18n check action
+        uses: wikiteq/mediawiki-i18n-check-action@main
+        with:
+          extension: SemanticReports
 
   test:
     name: PHPUnit
@@ -79,9 +79,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          #- mediawiki: REL1_39
-          #  smw: 4.2.0
-          #  php: 8.1
+          - mediawiki: REL1_39
+            smw: 4.2.0
+            php: 8.1
           - mediawiki: REL1_43
             smw: 6.0.1
             php: 8.3
@@ -110,12 +110,14 @@ jobs:
 
       # Make sure that AutoLoaderStructureTest passes
       - name: SMW - add missing autoload entries
+        if: ${{ matrix.smw == '6.0.1' }}
         working-directory: ${{ github.workspace }}/SemanticMediaWiki
         run: |
           jq '.AutoloadClasses."SMW\\Elastic\\ElasticStore" = "src/Elastic/ElasticStore.php" | .AutoloadClasses."SMW\\MediaWiki\\Search\\ExtendedSearchEngine" = "src/MediaWiki/Search/ExtendedSearchEngine.php"' \
             extension.json > extension.json.tmp && mv extension.json.tmp extension.json
 
       - name: SMW - fix maintenance autoload namespace entries
+        if: ${{ matrix.smw == '6.0.1' }}
         working-directory: ${{ github.workspace }}/SemanticMediaWiki
         run: |
           jq '.AutoloadNamespaces."SMW\\Maintenance\\" = "maintenance/" | delpaths([["AutoloadNamespaces", "SMW\\Maintenance"]])' \
