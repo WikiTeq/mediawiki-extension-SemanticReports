@@ -17,6 +17,15 @@ wfLoadExtension(
 );
 enableSemantics( 'example.org' );
 
+if ( !defined( 'SMW_PHPUNIT_DIR' )
+	&& version_compare( MW_VERSION, '1.39', '<=' )
+) {
+	define(
+		'SMW_PHPUNIT_DIR',
+		__DIR__ . '/../../../../SemanticMediaWiki/tests/phpunit'
+	);
+}
+
 $wgExtensionFunctions[] = static function () {
 	$smwTests = __DIR__ . '/../../../../SemanticMediaWiki/tests/phpunit';
 	// phpcs:disable Generic.PHP.NoSilencedErrors.Discouraged
@@ -86,3 +95,6 @@ $wgExtensionFunctions[] = static function () {
 $wgResourceModules['jquery.ui.autocomplete'] = [
 	'styles' => [],
 ];
+if ( version_compare( MW_VERSION, '1.39', '<=' ) ) {
+	$wgResourceModules['jquery.ui.autocomplete']['targets'] = [ 'desktop', 'mobile' ];
+}
