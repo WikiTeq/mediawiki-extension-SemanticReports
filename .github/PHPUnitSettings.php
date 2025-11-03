@@ -93,6 +93,7 @@ $wgExtensionFunctions[] = static function () {
 	if ( version_compare( MW_VERSION, '1.40', '<' ) ) {
 		$moreToSkip = [
 			'/SetupTest.php',
+			'/Exporter/ResourceBuilders/MonolingualTextPropertyValueResourceBuilderTest.php',
 			'/Integration/Maintenance/DisposeOutdatedEntitiesTest.php',
 			'/Integration/Maintenance/DumpRDFTest.php',
 			'/Integration/Maintenance/PurgeEntityCacheTest.php',
@@ -137,6 +138,17 @@ $wgExtensionFunctions[] = static function () {
 			'/SQLStore/QueryEngine/Fulltext/SearchTableRebuilderTest.php',
 			'/SQLStore/QueryEngine/QueryEngineTest.php',
 			'/SQLStore/TableBuilder/TableSchemaManagerTest.php',
+			'/SQLStore/TableBuilder/TableBuilderIntegrationTest.php',
+			'/IteratorFactoryTest.php',
+			'/Maintenance/DisposeOutdatedEntitiesTest.php',
+			'/Maintenance/Jobs/MaintenanceFactoryTest.php',
+			'/Maintenance/PurgeEntityCacheTest.php',
+			'/Maintenance/UpdateQueryDependenciesTest.php',
+			'/MediaWiki/Api/Browse/PValueLookupTest.php',
+			'/Query/Language/ValueDescriptionTest.php',
+			'/MediaWiki/Specials/Ask/ParametersWidgetTest.php',
+			'/PostProcHandlerTest.php',
+			'/SettingsTest.php',
 		];
 		foreach ( $moreToSkip as $file ) {
 			// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
