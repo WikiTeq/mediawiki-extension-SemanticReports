@@ -154,6 +154,7 @@ $wgExtensionFunctions[] = static function () {
 			// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
 			@unlink( $smwTests . $file );
 		}
+		// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
 		@unlink( $coreStructure . 'ContentHandlerFunctionalTest.php' );
 	}
 };
