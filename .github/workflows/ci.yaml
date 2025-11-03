@@ -123,12 +123,12 @@ jobs:
           jq '.AutoloadNamespaces."SMW\\Maintenance\\" = "maintenance/" | delpaths([["AutoloadNamespaces", "SMW\\Maintenance"]])' \
             extension.json > extension.json.tmp && mv extension.json.tmp extension.json
 
-      # Make sure we don't get errors about return types
-      # Cherry-pick https://github.com/SemanticMediaWiki/SemanticMediaWiki/pull/5806
+      # Make sure we don't get errors about return types6
       - name: SMW - fix iterator return types
         if: ${{ matrix.smw == '4.2.0' }}
         working-directory: ${{ github.workspace }}/SemanticMediaWiki
-        run: curl -L https://github.com/SemanticMediaWiki/SemanticMediaWiki/commit/84d564c16fe0dd4a62910c5ff1b596e75a647768.patch | git apply -v
+        run: |
+          sed --regexp-extended 's/public function (current|key|next|rewind|valid)/#[\\ReturnTypeWillChange] public function \1/' -i src/Iterators/CsvFileIterator.php
 
       - name: Mediawiki PHPUnit
         uses: wikiteq/mediawiki-phpunit-action@master
