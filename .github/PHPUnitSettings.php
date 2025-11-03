@@ -79,6 +79,14 @@ $wgExtensionFunctions[] = static function () {
 		$content
 	);
 
+	if ( version_compare( MW_VERSION, '1.40', '<' ) ) {
+		$content = str_replace(
+			'convertDeprecationsToExceptions="true"',
+			'convertDeprecationsToExceptions="false"',
+			$content
+		);
+	}
+
 	file_put_contents( $configFile, $content );
 
 	$coreStructure = __DIR__ . '/../../../../mediawiki/tests/phpunit/structure/';
