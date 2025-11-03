@@ -108,7 +108,7 @@ $wgExtensionFunctions[] = static function () {
 			'/Integration/MediaWiki/Import/Maintenance/RebuildFulltextSearchTableTest.php',
 			'/Integration/MediaWiki/Import/Maintenance/RebuildPropertyStatisticsMaintenanceTest.php',
 			'/Integration/MediaWiki/Import/Maintenance/UpdateEntityCollationTest.php',
-			'/Integration/MediaWiki/SQLStore/TableBuilder/TableBuilderIntegrationTest.php',
+			'/Integration/SQLStore/TableBuilder/TableBuilderIntegrationTest.php',
 			'/MediaWiki/Content/SchemaContentFormatterTest.php',
 			'/MediaWiki/Content/SchemaContentTest.php',
 			'/MediaWiki/Renderer/HtmlFormRendererTest.php',
@@ -154,6 +154,7 @@ $wgExtensionFunctions[] = static function () {
 			// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
 			@unlink( $smwTests . $file );
 		}
+		@unlink( $coreStructure . 'ContentHandlerFunctionalTest.php' );
 	}
 };
 
