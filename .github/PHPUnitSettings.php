@@ -79,14 +79,6 @@ $wgExtensionFunctions[] = static function () {
 		$content
 	);
 
-	if ( version_compare( MW_VERSION, '1.40', '<' ) ) {
-		$content = str_replace(
-			'convertDeprecationsToExceptions="true"',
-			'convertDeprecationsToExceptions="false"',
-			$content
-		);
-	}
-
 	file_put_contents( $configFile, $content );
 
 	$coreStructure = __DIR__ . '/../../../../mediawiki/tests/phpunit/structure/';
@@ -97,6 +89,60 @@ $wgExtensionFunctions[] = static function () {
 	// Same with AvailableRightsTest for the smw-* rights
 	@unlink( $coreStructure . 'AvailableRightsTest.php' );
 	// phpcs:enable Generic.PHP.NoSilencedErrors.Discouraged
+
+	if ( version_compare( MW_VERSION, '1.40', '<' ) ) {
+		$moreToSkip = [
+			'/SetupTest.php',
+			'/Integration/Maintenance/DisposeOutdatedEntitiesTest.php',
+			'/Integration/Maintenance/DumpRDFTest.php',
+			'/Integration/Maintenance/PurgeEntityCacheTest.php',
+			'/Integration/Maintenance/RebuildConceptCacheTest.php',
+			'/Integration/Maintenance/RebuildFulltextSearchTableTest.php',
+			'/Integration/Maintenance/RemoveDuplicateEntitiesTest.php',
+			'/Integration/Maintenance/SetupStoreMaintenanceTest.php',
+			'/Integration/Maintenance/UpdateEntityCollationTest.php',
+			'/Integration/Maintenance/UpdateQueryDependenciesTest.php',
+			'/Integration/MediaWiki/Import/Maintenance/RebuildConceptCacheMaintenanceTest.php',
+			'/Integration/MediaWiki/Import/Maintenance/RebuildDataMaintenanceTest.php',
+			'/Integration/MediaWiki/Import/Maintenance/RebuildFulltextSearchTableTest.php',
+			'/Integration/MediaWiki/Import/Maintenance/RebuildPropertyStatisticsMaintenanceTest.php',
+			'/Integration/MediaWiki/Import/Maintenance/UpdateEntityCollationTest.php',
+			'/Integration/MediaWiki/SQLStore/TableBuilder/TableBuilderIntegrationTest.php',
+			'/MediaWiki/Content/SchemaContentFormatterTest.php',
+			'/MediaWiki/Content/SchemaContentTest.php',
+			'/MediaWiki/Renderer/HtmlFormRendererTest.php',
+			'/MediaWiki/Specials/Admin/Supplement/EntityLookupTaskHandlerTest.php',
+			'/MediaWiki/Specials/Ask/HtmlFormTest.php',
+			'/MediaWiki/Specials/Ask/NavigationLinksWidgetTest.php',
+			'/MediaWiki/Specials/Ask/ParametersProcessorTest.php',
+			'/MediaWiki/Specials/Browse/ValueFormatterTest.php',
+			'/MediaWiki/Specials/SearchByProperty/PageBuilderTest.php',
+			'/MediaWiki/StripMarkerDecoderTest.php',
+			'/MediaWiki/Template/TemplateExpanderTest.php',
+			'/Parser/RecursiveTextProcessorTest.php',
+			'/ParserFunctions/ConceptParserFunctionTest.php',
+			'/ParserFunctions/InfoParserFunctionTest.php',
+			'/Property/SpecificationLookupTest.php',
+			'/Query/DebugFormatterTest.php',
+			'/Query/DeferredTest.php',
+			'/Query/DescriptionFactoryTest.php',
+			'/Query/QueryLinkerTest.php',
+			'/SPARQLStore/QueryEngine/DescriptionInterpreters/ValueDescriptionInterpreterTest.php',
+			'/SPARQLStore/QueryEngine/QueryEngineTest.php',
+			'/SQLStore/EntityStore/SemanticDataLookupTest.php',
+			'/SQLStore/Lookup/CachedListLookupTest.php',
+			'/SQLStore/Lookup/MonolingualTextLookupTest.php',
+			'/SQLStore/Lookup/ProximityPropertyValueLookupTest.php',
+			'/SQLStore/PropertyTableIdReferenceFinderTest.php',
+			'/SQLStore/QueryEngine/Fulltext/SearchTableRebuilderTest.php',
+			'/SQLStore/QueryEngine/QueryEngineTest.php',
+			'/SQLStore/TableBuilder/TableSchemaManagerTest.php',
+		];
+		foreach ( $moreToSkip as $file ) {
+			// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+			@unlink( $smwTests . $file );
+		}
+	}
 };
 
 // ext.smw.autocomplete missing dependency
