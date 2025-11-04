@@ -27,7 +27,7 @@ jobs:
           - mediawiki: REL1_39
             smw: 4.2.0
           - mediawiki: REL1_43
-            smw: 5.0.2
+            smw: 6.0.1
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401
@@ -68,33 +68,75 @@ jobs:
       - name: I18n check action
         uses: wikiteq/mediawiki-i18n-check-action@main
         with:
-          extension: EncryptedContent
+          extension: SemanticReports
 
-# enable once we have tests
-#  test:
-#    name: PHPUnit
-#    runs-on: ubuntu-latest
-#    env:
-#      MW_INSTALL_PATH: ${{ github.workspace }}/mediawiki
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        php: [ '8.1' ]
-#        mediawiki: [ REL1_39, REL1_43 ]
-#    steps:
-#      - name: Setup Extension
-#        uses: actions/checkout@v4
-#      - name: Setup dependency - AbuseFilter
-#        uses: actions/checkout@v4
-#        with:
-#          path: ${{ github.workspace }}/AbuseFilter
-#          ref: REL1_43
-#          repository: wikimedia/mediawiki-extensions-AbuseFilter
-#      - name: Mediawiki PHPUnit
-#        uses: wikiteq/mediawiki-phpunit-action@master
-#        with:
-#          type: extension
-#          php: ${{ matrix.php }}
-#          mwbranch: ${{ matrix.mediawiki }}
-#          extension: EncryptedContent
-#          extra_file: .github/PHPUnitSettings.php
+  test:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    env:
+      MW_INSTALL_PATH: ${{ github.workspace }}/mediawiki
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Unclear failure error, WLDR-421
+          # - mediawiki: REL1_39
+          #   smw: 4.2.0
+          #   php: 8.1
+          - mediawiki: REL1_43
+            smw: 6.0.1
+            php: 8.3
+    steps:
+      - name: Setup Extension
+        uses: actions/checkout@v4
+
+      - name: Setup dependency - SemanticMediaWiki
+        uses: actions/checkout@v4
+        with:
+          repository: SemanticMediaWiki/SemanticMediaWiki
+          path: ${{ github.workspace }}/SemanticMediaWiki
+          ref: ${{ matrix.smw }}
+
+      # SMW 5.0.2 is pinned to using codesniffer 46.0.0, core REL1_43 uses
+      # codesniffer 45.0.0, and our phpunit action loads all dev dependencies
+      # of extensions; just delete all of SMW's
+      - name: SMW - remove composer.json dev dependencies
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: jq 'delpaths([["require-dev"]])' composer.json > composer.json.tmp && mv composer.json.tmp composer.json
+
+      # Make sure that ExtensionJsonValidationTest passes
+      - name: SMW - remove invalid qunit tests
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: jq 'delpaths([["QUnitTestModule"]])' extension.json > extension.json.tmp && mv extension.json.tmp extension.json
+
+      # Make sure that AutoLoaderStructureTest passes
+      - name: SMW - add missing autoload entries
+        if: ${{ matrix.smw == '6.0.1' }}
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: |
+          jq '.AutoloadClasses."SMW\\Elastic\\ElasticStore" = "src/Elastic/ElasticStore.php" | .AutoloadClasses."SMW\\MediaWiki\\Search\\ExtendedSearchEngine" = "src/MediaWiki/Search/ExtendedSearchEngine.php"' \
+            extension.json > extension.json.tmp && mv extension.json.tmp extension.json
+
+      - name: SMW - fix maintenance autoload namespace entries
+        if: ${{ matrix.smw == '6.0.1' }}
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: |
+          jq '.AutoloadNamespaces."SMW\\Maintenance\\" = "maintenance/" | delpaths([["AutoloadNamespaces", "SMW\\Maintenance"]])' \
+            extension.json > extension.json.tmp && mv extension.json.tmp extension.json
+
+      # Make sure we don't get errors about return types
+      - name: SMW - fix iterator return types
+        if: ${{ matrix.smw == '4.2.0' }}
+        working-directory: ${{ github.workspace }}/SemanticMediaWiki
+        run: |
+          sed --regexp-extended 's/public function (current|key|next|rewind|valid|count)/#[\\ReturnTypeWillChange] public function \1/' -i src/Iterators/CsvFileIterator.php
+
+      - name: Mediawiki PHPUnit
+        uses: wikiteq/mediawiki-phpunit-action@master
+        with:
+          type: extension
+          php: ${{ matrix.php }}
+          mwbranch: ${{ matrix.mediawiki }}
+          extension: ${{ env.EXTNAME }}
+          extra_file: .github/PHPUnitSettings.php
+          use_mysql: true
