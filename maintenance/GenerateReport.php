@@ -11,13 +11,10 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 
-// @codingStandardsIgnoreStart
-
 /**
  * @method \MediaWiki\MediaWikiServices getServiceContainer() available in 1.40+
  */
 class GenerateReport extends \Maintenance {
-// @codingStandardsIgnoreEnd
 
 	/**
 	 * SemanticReportsReport constructor.
