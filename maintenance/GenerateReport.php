@@ -18,10 +18,8 @@ class GenerateReport extends \Maintenance {
 
 	/**
 	 * SemanticReportsReport constructor.
-	 *
-	 * @param null $args
 	 */
-	public function __construct( $args = null ) {
+	public function __construct() {
 		parent::__construct();
 		$this->addDescription( 'Generates a report based on the semantic query' );
 		$this->addOption( 'query', 'Query to run: "{{#ask: ...}}"', true, true, 'q' );
@@ -34,9 +32,6 @@ class GenerateReport extends \Maintenance {
 		$this->addOption( 'limit', 'Override the results limit', false, true, 'l' );
 
 		$this->requireExtension( 'SemanticReports' );
-		if ( $args ) {
-			$this->loadWithArgv( $args );
-		}
 	}
 
 	/**
