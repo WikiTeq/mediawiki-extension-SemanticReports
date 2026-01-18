@@ -56,8 +56,6 @@ jobs:
           echo '{"extra":{"merge-plugin":{"include":["extensions/*/composer.json","skins/*/composer.json"]}}}' > composer.local.json
           composer update
           composer update
-          composer config repositories.wikiteq/phan-mediawikiservices-check-plugin git https://github.com/WikiTeq/phan-mediawikiservices-check-plugin.git
-          composer require "wikiteq/phan-mediawikiservices-check-plugin:v0.2.0"
       - name: Phan
         run: ./vendor/bin/phan -d extensions/${{ env.EXTNAME }} --minimum-target-php-version=8.1 --long-progress-bar
 

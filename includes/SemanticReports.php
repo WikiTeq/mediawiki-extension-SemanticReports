@@ -1,10 +1,13 @@
 <?php
 
+// We run Phan with both MW 1.39 and MW 1.43, the suppression from 1.39 isn't
+// needed on 1.43 and phan would complain about that
+// @phan-file-suppress UnusedPluginSuppression,UnusedPluginFileSuppression
+
 namespace MediaWiki\Extension\SemanticReports;
 
 use SMW\MediaWiki\Api\ApiRequestParameterFormatter;
 use SMW\Query\QueryContext;
-use SMW\Query\QueryResult;
 use SMW\Query\QuerySourceFactory;
 use SMW\Query\ResultPrinters\CsvFileExportPrinter;
 use SMWQuery;
@@ -76,12 +79,15 @@ class SemanticReports {
 		);
 
 		// run the query
-		$queryResult = $this->getQueryResult( $this->getQuery(
+		$query = $this->getQuery(
 			$queryString,
 			$printouts,
 			$parameters,
 			$format
-		) );
+		);
+		$queryResult = $this->querySourceFactory
+			->get( $query->getQuerySource() )
+			->getQueryResult( $query );
 
 		// return false if there are errors
 		/** @phan-suppress-next-line PhanUndeclaredClassMethod */
@@ -129,23 +135,6 @@ class SemanticReports {
 		// $query->setOption( SMWQuery::PROC_CONTEXT, 'SemanticReports' );
 
 		return $query;
-	}
-
-	/**
-	 * Run the actual query and return the result.
-	 *
-	 * @param SMWQuery $query
-	 *
-	 * @return QueryResult|\SMWQueryResult
-	 *
-	 * // @codingStandardsIgnoreStart
-	 * @phan-suppress PhanUndeclaredTypeReturnType
-	 * // @codingStandardsIgnoreEnd
-	 */
-	private function getQueryResult( SMWQuery $query ) {
-		return $this->querySourceFactory
-			->get( $query->getQuerySource() )
-			->getQueryResult( $query );
 	}
 
 }

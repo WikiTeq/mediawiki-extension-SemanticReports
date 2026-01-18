@@ -11,20 +11,15 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 
-// @codingStandardsIgnoreStart
-
 /**
  * @method \MediaWiki\MediaWikiServices getServiceContainer() available in 1.40+
  */
 class GenerateReport extends \Maintenance {
-// @codingStandardsIgnoreEnd
 
 	/**
 	 * SemanticReportsReport constructor.
-	 *
-	 * @param null $args
 	 */
-	public function __construct( $args = null ) {
+	public function __construct() {
 		parent::__construct();
 		$this->addDescription( 'Generates a report based on the semantic query' );
 		$this->addOption( 'query', 'Query to run: "{{#ask: ...}}"', true, true, 'q' );
@@ -37,9 +32,6 @@ class GenerateReport extends \Maintenance {
 		$this->addOption( 'limit', 'Override the results limit', false, true, 'l' );
 
 		$this->requireExtension( 'SemanticReports' );
-		if ( $args ) {
-			$this->loadWithArgv( $args );
-		}
 	}
 
 	/**
@@ -90,8 +82,8 @@ class GenerateReport extends \Maintenance {
 			$this->fatalError( 'Error generating report' );
 		}
 
-		// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.Found
-		if ( $filename = $this->getOption( 'output' ) ) {
+		$filename = $this->getOption( 'output' );
+		if ( $filename ) {
 			// output to the file
 			if ( !file_put_contents( $filename, $result ) ) {
 				$this->fatalError( "Error saving report to $filename" );
