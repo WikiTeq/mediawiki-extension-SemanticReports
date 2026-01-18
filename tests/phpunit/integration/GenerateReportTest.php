@@ -2,9 +2,9 @@
 
 namespace MediaWiki\Extension\SemanticReports\Tests\Integration;
 
-use Exception;
 use MediaWiki\Extension\SemanticReports\Maintenance\GenerateReport;
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
+use RuntimeException;
 
 /**
  * @covers \MediaWiki\Extension\SemanticReports\Maintenance\GenerateReport
@@ -18,7 +18,7 @@ class GenerateReportTest extends MaintenanceBaseTestCase {
 
 	/** @dataProvider provideInvalidArgs */
 	public function testInvalidArgs( array $args, string $expected ) {
-		$this->expectException( Exception::class );
+		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( "FATAL ERROR: $expected (exit code = 1)" );
 		$this->maintenance->loadWithArgv( $args );
 		$this->maintenance->execute();

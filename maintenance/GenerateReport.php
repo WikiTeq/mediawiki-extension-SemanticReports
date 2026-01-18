@@ -2,9 +2,9 @@
 
 namespace MediaWiki\Extension\SemanticReports\Maintenance;
 
-use Exception;
 use MediaWiki\Extension\SemanticReports\SemanticReports;
 use MediaWiki\MediaWikiServices;
+use RuntimeException;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -109,7 +109,7 @@ class GenerateReport extends \Maintenance {
 		) {
 			parent::fatalError( $msg, $exitCode );
 		} else {
-			throw new Exception( "FATAL ERROR: $msg (exit code = $exitCode)" );
+			throw new RuntimeException( "FATAL ERROR: $msg (exit code = $exitCode)" );
 		}
 	}
 
