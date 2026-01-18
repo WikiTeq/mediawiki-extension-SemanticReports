@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extension\SemanticReports\Maintenance;
 
+use Exception;
 use MediaWiki\Extension\SemanticReports\SemanticReports;
 use MediaWiki\MediaWikiServices;
 
@@ -92,6 +93,39 @@ class GenerateReport extends \Maintenance {
 		} else {
 			// output to the stdout
 			$this->output( $result );
+		}
+	}
+
+	/**
+	 * @codeCoverageIgnore
+	 * @inheritDoc
+	 * @return never
+	 */
+	protected function fatalError( $msg, $exitCode = 1 ) {
+		// Until 1.43 fatalError() would call exit() unconditionally, making it
+		// impossible to test fatalError() calls, see T272241
+		if ( version_compare( MW_VERSION, '1.43', '>=' )
+			|| !defined( 'MW_PHPUNIT_TEST' )
+		) {
+			parent::fatalError( $msg, $exitCode );
+		} else {
+			throw new Exception( "FATAL ERROR: $msg (exit code = $exitCode)" );
+		}
+	}
+
+	/**
+	 * @codeCoverageIgnore
+	 * @inheritDoc
+	 */
+	protected function error( $err, $die = 0 ) {
+		// Parent method will use
+		// `fwrite( STDERR, $err . "\n" );` outside of tests
+		// but `print $err;` in tests, add an extra line ending for readability
+		// in tests
+		if ( defined( 'MW_PHPUNIT_TEST' ) ) {
+			print( $err . "\n" );
+		} else {
+			parent::error( $err, $die );
 		}
 	}
 
