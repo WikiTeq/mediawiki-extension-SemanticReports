@@ -70,13 +70,14 @@ class GenerateReport extends \Maintenance {
 			);
 		}
 
+		$limitOpt = $this->getOption( 'limit' );
 		$result = $semanticReports->getReportData(
 			$query,
 			$format,
 			$this->getOption( 'mainlabel' ),
 			$this->getOption( 'sep' ),
 			$this->getOption( 'valuesep' ),
-			$this->getOption( 'limit' )
+			$limitOpt !== null ? (int)$limitOpt : null
 		);
 
 		if ( $result === false ) {
