@@ -24,8 +24,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - mediawiki: REL1_39
-            smw: 4.2.0
           - mediawiki: REL1_43
             smw: 6.0.1
     steps:

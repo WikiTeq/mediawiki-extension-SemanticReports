@@ -9,7 +9,7 @@
 	"descriptionmsg": "semanticreports-desc",
 	"license-name": "MIT",
 	"requires": {
-		"MediaWiki": ">= 1.39.0",
+		"MediaWiki": ">= 1.43.0",
 		"extensions": {
 			"SemanticMediaWiki": ">= 4.2.0"
 		}
