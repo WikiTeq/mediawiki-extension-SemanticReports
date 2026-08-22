@@ -55,7 +55,8 @@ class GenerateReport extends \Maintenance {
 		}
 
 		// enforce that the query does not contain curly braces
-		if ( str_contains( $query, '{' ) ) {
+		// (str_contains() is PHP 8+; this extension still supports 1.39/PHP 7.4)
+		if ( strpos( $query, '{' ) !== false ) {
 			$this->fatalError(
 				'Query cannot contain curly braces, i.e. use "[[Category:Test]] [[Property:Test]]", ' .
 				'not "{{#ask: [[Category:Test]] ... }}"'
