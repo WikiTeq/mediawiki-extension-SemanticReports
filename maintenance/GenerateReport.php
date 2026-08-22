@@ -62,12 +62,20 @@ class GenerateReport extends \Maintenance {
 			);
 		}
 
-		// enforce that the query does not contain pipe arguments aside from print requests
-		if ( preg_match( '/\|[^?]+/', $query ) ) {
+		// enforce that the query does not contain pipe arguments aside from
+		// print requests. Print requests ("|?Prop"), their modifiers
+		// ("|+filter=..."), and value disjunctions ("[[A::x||y]]") are allowed;
+		// printer parameters ("|format=...") are not.
+		if ( preg_match( '/\|\s*[a-zA-Z][a-zA-Z0-9_-]*\s*=/', $query ) ) {
 			$this->fatalError(
 				'Query cannot contain pipe arguments aside from print requests, i.e. "|?Prop" is allowed,' .
 				' but "|format=test" is not'
 			);
+		}
+
+		$limit = $this->getOption( 'limit' );
+		if ( $limit !== null && !preg_match( '/^\d+$/', $limit ) ) {
+			$this->fatalError( 'Limit must be a non-negative integer' );
 		}
 
 		$result = $semanticReports->getReportData(
@@ -76,7 +84,7 @@ class GenerateReport extends \Maintenance {
 			$this->getOption( 'mainlabel' ),
 			$this->getOption( 'sep' ),
 			$this->getOption( 'valuesep' ),
-			$this->getOption( 'limit' )
+			$limit !== null ? (int)$limit : null
 		);
 
 		if ( $result === false ) {

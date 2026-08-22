@@ -3,6 +3,8 @@
 namespace MediaWiki\Extension\SemanticReports\Tests\Integration;
 
 use MediaWiki\Extension\SemanticReports\Maintenance\GenerateReport;
+use MediaWiki\Extension\SemanticReports\SemanticReports;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 use RuntimeException;
 
@@ -39,6 +41,43 @@ class GenerateReportTest extends MaintenanceBaseTestCase {
 			'Query cannot contain pipe arguments aside from print requests, i.e. "|?Prop" is allowed,' .
 				' but "|format=test" is not',
 		];
+		yield 'Invalid query - pipe argument with space' => [
+			[ '--query', '[[Category:Books]]| format=json', '--format', 'csv' ],
+			'Query cannot contain pipe arguments aside from print requests, i.e. "|?Prop" is allowed,' .
+				' but "|format=test" is not',
+		];
+		yield 'Invalid limit - non numeric' => [
+			[ '--query', 'ignored', '--format', 'csv', '--limit', 'abc' ],
+			'Limit must be a non-negative integer',
+		];
+		yield 'Invalid limit - decimal' => [
+			[ '--query', 'ignored', '--format', 'csv', '--limit', '10.5' ],
+			'Limit must be a non-negative integer',
+		];
 	}
 
+	public static function provideValidQueries() {
+		yield 'Print request' => [ '[[Category:Books]]|?Author' ];
+		yield 'Value disjunction' => [ '[[Status::Active||Pending]]' ];
+		yield 'Printout modifier' => [ '[[Status::Active]]|?Status|+filter=A' ];
+	}
+
+	/** @dataProvider provideValidQueries */
+	public function testValidQueriesAreNotRejected( string $query ) {
+		$mock = $this->createMock( SemanticReports::class );
+		$mock->method( 'getReportData' )->willReturn( 'a,b' );
+
+		$this->overrideMwServices();
+		MediaWikiServices::getInstance()->redefineService(
+			'SemanticReports',
+			static function () use ( $mock ) {
+				return $mock;
+			}
+		);
+		$this->maintenance->loadWithArgv( [ '--query', $query, '--format', 'csv' ] );
+		// Reaching the end of execute() without a RuntimeException proves the
+		// guards accepted the query.
+		$this->maintenance->execute();
+		$this->expectNotToPerformAssertions();
+	}
 }
