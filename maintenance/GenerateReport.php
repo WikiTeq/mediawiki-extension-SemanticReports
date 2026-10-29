@@ -3,7 +3,6 @@
 namespace MediaWiki\Extension\SemanticReports\Maintenance;
 
 use MediaWiki\Extension\SemanticReports\SemanticReports;
-use MediaWiki\MediaWikiServices;
 use RuntimeException;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
@@ -12,9 +11,6 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 
-/**
- * @method \MediaWiki\MediaWikiServices getServiceContainer() available in 1.40+
- */
 class GenerateReport extends \Maintenance {
 
 	/**
@@ -39,14 +35,8 @@ class GenerateReport extends \Maintenance {
 	 * @return null
 	 */
 	public function execute() {
-		// REL1_39 compat
-		if ( !method_exists( $this, 'getServiceContainer' ) ) {
-			/** @var SemanticReports $semanticReports */
-			$semanticReports = MediaWikiServices::getInstance()->get( 'SemanticReports' );
-		} else {
-			/** @var SemanticReports $semanticReports */
-			$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
-		}
+		/** @var SemanticReports $semanticReports */
+		$semanticReports = $this->getServiceContainer()->get( 'SemanticReports' );
 		$query = $this->getOption( 'query' );
 		$format = $this->getOption( 'format' );
 
@@ -102,10 +92,6 @@ class GenerateReport extends \Maintenance {
 	 * @return never
 	 */
 	protected function fatalError( $msg, $exitCode = 1 ) {
-		// Until 1.43 fatalError() would call exit() unconditionally, making it
-		// impossible to test fatalError() calls, see T272241
-		// In tests always use RuntimeException so that we support both 1.39 and
-		// 1.43
 		if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
 			parent::fatalError( $msg, $exitCode );
 		} else {
