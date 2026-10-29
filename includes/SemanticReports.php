@@ -1,8 +1,5 @@
 <?php
 
-// The file-level suppression below is still needed on MW 1.43; without it
-// Phan complains about the unused suppression
-// @phan-file-suppress UnusedPluginSuppression,UnusedPluginFileSuppression
 
 namespace MediaWiki\Extension\SemanticReports;
 
@@ -90,7 +87,6 @@ class SemanticReports {
 			->getQueryResult( $query );
 
 		// return false if there are errors
-		/** @phan-suppress-next-line PhanUndeclaredClassMethod */
 		if ( $queryResult->getErrors() !== [] ) {
 			return false;
 		}
