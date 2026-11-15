@@ -1,6 +1,5 @@
 <?php
 
-
 namespace MediaWiki\Extension\SemanticReports;
 
 use SMW\MediaWiki\Api\ApiRequestParameterFormatter;
