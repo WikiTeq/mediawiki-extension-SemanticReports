@@ -92,6 +92,8 @@ class GenerateReport extends \Maintenance {
 	 * @return never
 	 */
 	protected function fatalError( $msg, $exitCode = 1 ) {
+		// On MW 1.43 fatalError() always calls exit(), so tests throw an
+		// exception instead (T272241).
 		if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
 			parent::fatalError( $msg, $exitCode );
 		} else {
